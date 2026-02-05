@@ -1,0 +1,178 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #F9FAFB;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Ant Design overrides for Slack/Notion style */
+.ant-layout-sider {
+  background: #1E1E1E !important;
+}
+
+.ant-menu-dark {
+  background: transparent !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: #5865F2 !important;
+  border-radius: 6px;
+}
+
+.ant-menu-dark .ant-menu-item:hover {
+  background-color: rgba(88, 101, 242, 0.1) !important;
+  border-radius: 6px;
+}
+
+.ant-card {
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ant-table {
+  border-radius: 12px;
+}
+
+.ant-btn-primary {
+  box-shadow: 0 2px 4px rgba(88, 101, 242, 0.3);
+}
+
+/* Status badges */
+.status-available {
+  color: #22C55E;
+}
+
+.status-busy {
+  color: #F59E0B;
+}
+
+.status-offline {
+  color: #6B7280;
+}
+
+/* Task timer */
+.task-timer {
+  font-variant-numeric: tabular-nums;
+}
+
+.task-timer.warning {
+  color: #F59E0B;
+}
+
+.task-timer.danger {
+  color: #EF4444;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Logo styles */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  margin-bottom: 8px;
+}
+
+.logo-text {
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.logo-icon {
+  font-size: 24px;
+}
+
+/* Dashboard stat cards */
+.stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Progress bar colors */
+.ant-progress-success .ant-progress-bg {
+  background-color: #22C55E;
+}
+
+/* Table row hover */
+.ant-table-tbody > tr:hover > td {
+  background-color: #F5F5F5 !important;
+}
+
+/* Form item spacing */
+.ant-form-item {
+  margin-bottom: 16px;
+}
+
+/* Modal styling */
+.ant-modal-content {
+  border-radius: 12px;
+}
+
+/* Dropdown menu */
+.ant-dropdown-menu {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Badge styling */
+.ant-badge-status-dot {
+  width: 8px;
+  height: 8px;
+}
+
+/* Empty state */
+.ant-empty-description {
+  color: #6B7280;
+}
