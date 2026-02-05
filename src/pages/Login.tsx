@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Typography, Alert, Space } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -14,7 +14,7 @@ function SparkLogo({ size = 'large' }: { size?: 'small' | 'large' }) {
   const starTop = size === 'large' ? '-8px' : '-5px';
 
   return (
-    <div className="spark-brand" style={{ marginBottom: size === 'large' ? 16 : 0 }}>
+    <div className="spark-brand spark-brand-glow" style={{ marginBottom: size === 'large' ? 16 : 0 }}>
       <div className="spark-brand-wrapper" style={{ fontSize, fontWeight: 700 }}>
         <span
           className="spark-brand-text visible"
@@ -75,19 +75,56 @@ function SparkLogo({ size = 'large' }: { size?: 'small' | 'large' }) {
   );
 }
 
-// Floating Particles
+// Floating Particles with glow effects
 function Particles() {
-  const particles = Array.from({ length: 40 }, (_, i) => ({
+  // Regular floating particles
+  const particles = Array.from({ length: 50 }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
     top: Math.random() * 100,
-    delay: Math.random() * 3,
+    delay: Math.random() * 5,
+    duration: 3 + Math.random() * 4,
     size: 2 + Math.random() * 4,
-    color: ['#5865F2', '#ec4899', '#6366f1', '#f59e0b'][Math.floor(Math.random() * 4)],
+    color: ['#5865F2', '#ec4899', '#6366f1', '#f59e0b', '#22d3ee'][Math.floor(Math.random() * 5)],
+  }));
+
+  // Larger glow orbs
+  const glowOrbs = Array.from({ length: 8 }, (_, i) => ({
+    id: i,
+    left: 10 + Math.random() * 80,
+    top: 10 + Math.random() * 80,
+    delay: Math.random() * 8,
+    size: 40 + Math.random() * 60,
+    color: ['rgba(88, 101, 242, 0.15)', 'rgba(236, 72, 153, 0.12)', 'rgba(99, 102, 241, 0.1)'][Math.floor(Math.random() * 3)],
+  }));
+
+  // Shooting stars
+  const shootingStars = Array.from({ length: 3 }, (_, i) => ({
+    id: i,
+    left: Math.random() * 50,
+    top: 20 + Math.random() * 40,
+    delay: i * 4 + Math.random() * 2,
   }));
 
   return (
     <div className="spark-login-particles">
+      {/* Glow orbs */}
+      {glowOrbs.map((orb) => (
+        <div
+          key={`orb-${orb.id}`}
+          className="spark-particle-glow"
+          style={{
+            left: `${orb.left}%`,
+            top: `${orb.top}%`,
+            width: orb.size,
+            height: orb.size,
+            background: `radial-gradient(circle, ${orb.color} 0%, transparent 70%)`,
+            animationDelay: `${orb.delay}s`,
+          }}
+        />
+      ))}
+
+      {/* Floating particles */}
       {particles.map((p) => (
         <div
           key={p.id}
@@ -98,7 +135,22 @@ function Particles() {
             width: p.size,
             height: p.size,
             background: p.color,
+            color: p.color,
             animationDelay: `${p.delay}s`,
+            animationDuration: `${p.duration}s`,
+          }}
+        />
+      ))}
+
+      {/* Shooting stars */}
+      {shootingStars.map((star) => (
+        <div
+          key={`star-${star.id}`}
+          className="spark-shooting-star"
+          style={{
+            left: `${star.left}%`,
+            top: `${star.top}%`,
+            animationDelay: `${star.delay}s`,
           }}
         />
       ))}
@@ -134,7 +186,7 @@ export default function Login() {
         {/* Logo */}
         <div style={{ marginBottom: 32 }}>
           <SparkLogo size="large" />
-          <Text style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: 16, display: 'block', marginTop: 16 }}>
+          <Text className="spark-tagline-cursor" style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: 16, display: 'block', marginTop: 16 }}>
             AI-Powered Job Application Management
           </Text>
         </div>
@@ -232,11 +284,11 @@ export default function Login() {
               </Text>
               <div style={{ marginTop: 8 }}>
                 <Text style={{ fontSize: 12, color: '#94a3b8', fontFamily: 'monospace' }}>
-                  Manager: frank.l@company.com
+                  Manager: bob.m@company.com
                 </Text>
                 <br />
                 <Text style={{ fontSize: 12, color: '#94a3b8', fontFamily: 'monospace' }}>
-                  Admin: grace.p@company.com
+                  Admin: admin@company.com
                 </Text>
                 <br />
                 <Text style={{ fontSize: 12, color: '#94a3b8', fontFamily: 'monospace' }}>
