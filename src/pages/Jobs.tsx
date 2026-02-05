@@ -19,7 +19,6 @@ import {
 } from 'antd';
 import {
   SearchOutlined,
-  FilterOutlined,
   DownloadOutlined,
   ReloadOutlined,
   GlobalOutlined,
@@ -28,7 +27,7 @@ import {
   EnvironmentOutlined,
   LinkOutlined,
 } from '@ant-design/icons';
-import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
+import type { ColumnsType } from 'antd/es/table';
 import axios from 'axios';
 import { endpoints } from '../config/api';
 
@@ -53,12 +52,6 @@ interface Job {
   isActive: boolean;
 }
 
-interface JobStats {
-  total: number;
-  bySource: Record<string, number>;
-  byCategory: Record<string, number>;
-}
-
 const SOURCE_COLORS: Record<string, string> = {
   linkedin: '#0A66C2',
   indeed: '#2164F3',
@@ -68,85 +61,26 @@ const SOURCE_COLORS: Record<string, string> = {
 
 const CATEGORY_COLORS: Record<string, string> = {
   'AI/ML': 'purple',
+  'ai_ml': 'purple',
   'Data Science': 'green',
+  'data_science': 'green',
   'Software Engineering': 'blue',
   'DevOps': 'orange',
   'Product': 'magenta',
   'Design': 'pink',
+  'data_analysis': 'cyan',
+  'bi_analytics': 'gold',
   'Other': 'default',
 };
-
-// Mock data for fallback
-const getMockJobs = (): Job[] => [
-  {
-    id: '1',
-    title: 'Senior Machine Learning Engineer',
-    company: 'Google',
-    location: 'Mountain View, CA',
-    salaryRange: '$180,000 - $250,000',
-    jobType: 'full-time',
-    experienceLevel: 'senior',
-    category: 'AI/ML',
-    source: 'linkedin',
-    url: 'https://linkedin.com/jobs/1234',
-    description: 'We are looking for a Senior ML Engineer to join our AI team...',
-    requirements: ['5+ years ML experience', 'PhD preferred', 'TensorFlow/PyTorch'],
-    postedDate: '2024-01-15T10:00:00Z',
-    scrapedAt: '2024-01-15T12:00:00Z',
-    isActive: true,
-  },
-  {
-    id: '2',
-    title: 'Data Scientist',
-    company: 'Meta',
-    location: 'Menlo Park, CA',
-    salaryRange: '$150,000 - $200,000',
-    jobType: 'full-time',
-    experienceLevel: 'mid',
-    category: 'Data Science',
-    source: 'indeed',
-    url: 'https://indeed.com/jobs/5678',
-    description: 'Join our data science team to build ML models at scale...',
-    requirements: ['3+ years experience', 'Python', 'SQL', 'Statistics'],
-    postedDate: '2024-01-14T08:00:00Z',
-    scrapedAt: '2024-01-14T10:00:00Z',
-    isActive: true,
-  },
-  {
-    id: '3',
-    title: 'Software Engineer - Backend',
-    company: 'Amazon',
-    location: 'Seattle, WA',
-    salaryRange: '$140,000 - $190,000',
-    jobType: 'full-time',
-    experienceLevel: 'mid',
-    category: 'Software Engineering',
-    source: 'glassdoor',
-    url: 'https://glassdoor.com/jobs/9012',
-    description: 'Build scalable backend services for AWS...',
-    requirements: ['Java/Python', 'Distributed systems', 'AWS'],
-    postedDate: '2024-01-13T14:00:00Z',
-    scrapedAt: '2024-01-13T16:00:00Z',
-    isActive: true,
-  },
-];
 
 export default function Jobs() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState<JobStats | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  // Filters
   const [search, setSearch] = useState('');
   const [sourceFilter, setSourceFilter] = useState<string | undefined>();
   const [categoryFilter, setCategoryFilter] = useState<string | undefined>();
-  const [pagination, setPagination] = useState<TablePaginationConfig>({
-    current: 1,
-    pageSize: 20,
-    total: 0,
-  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -156,69 +90,21 @@ export default function Jobs() {
         if (search) params.append('search', search);
         if (sourceFilter) params.append('source', sourceFilter);
         if (categoryFilter) params.append('category', categoryFilter);
-        params.append('page', String(pagination.current));
-        params.append('limit', String(pagination.pageSize));
+        params.append('page', '1');
+        params.append('limit', '20');
 
         const response = await axios.get(`${endpoints.jobs.list}?${params}`);
         setJobs(response.data.jobs || []);
-        setPagination((prev) => ({
-          ...prev,
-          total: response.data.pagination?.total || 0,
-        }));
       } catch (err) {
         console.error('Failed to fetch jobs:', err);
-        // Use mock data
-        setJobs(getMockJobs());
+        setJobs([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, sourceFilter, categoryFilter]);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await axios.get(endpoints.jobs.stats);
-        setStats(response.data);
-      } catch {
-        setStats({
-          total: 1247,
-          bySource: { linkedin: 523, indeed: 412, glassdoor: 287, manual: 25 },
-          byCategory: {
-            'AI/ML': 342,
-            'Data Science': 287,
-            'Software Engineering': 456,
-            'DevOps': 89,
-            'Product': 45,
-            'Design': 28,
-          },
-        });
-      }
-    };
-
-    fetchStats();
-  }, []);
-
-  const handleExport = async () => {
-    try {
-      const response = await axios.get(endpoints.jobs.export, {
-        responseType: 'blob',
-      });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `jobs_export_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      message.success('Jobs exported successfully');
-    } catch {
-      message.error('Failed to export jobs');
-    }
-  };
 
   const columns: ColumnsType<Job> = [
     {
@@ -226,7 +112,7 @@ export default function Jobs() {
       dataIndex: 'title',
       key: 'title',
       render: (text: string, record: Job) => (
-        <a onClick={() => { setSelectedJob(record); setDrawerOpen(true); }}>
+        <a href={record.url} target="_blank" rel="noopener noreferrer" style={{ color: '#5865F2' }}>
           {text}
         </a>
       ),
@@ -261,7 +147,7 @@ export default function Jobs() {
       dataIndex: 'source',
       key: 'source',
       render: (source: string) => (
-        <Tag style={{ backgroundColor: SOURCE_COLORS[source], color: '#fff', border: 'none' }}>
+        <Tag style={{ backgroundColor: SOURCE_COLORS[source] || '#6B7280', color: '#fff', border: 'none' }}>
           {source.charAt(0).toUpperCase() + source.slice(1)}
         </Tag>
       ),
@@ -286,13 +172,24 @@ export default function Jobs() {
       dataIndex: 'postedDate',
       key: 'postedDate',
       render: (date: string) => {
+        if (!date) return <Text type="secondary">Unknown</Text>;
         const d = new Date(date);
         const now = new Date();
-        const diffDays = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+        const diffMs = now.getTime() - d.getTime();
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        let timeText = '';
+        if (diffHours < 1) timeText = 'Just now';
+        else if (diffHours < 24) timeText = `${diffHours}h ago`;
+        else if (diffDays === 1) timeText = 'Yesterday';
+        else if (diffDays < 7) timeText = `${diffDays}d ago`;
+        else timeText = d.toLocaleDateString();
+
         return (
           <Space>
             <CalendarOutlined style={{ color: '#9CA3AF' }} />
-            {diffDays === 0 ? 'Today' : diffDays === 1 ? 'Yesterday' : `${diffDays} days ago`}
+            <Text type="secondary">{timeText}</Text>
           </Space>
         );
       },
@@ -303,21 +200,6 @@ export default function Jobs() {
       key: 'isActive',
       render: (active: boolean) => (
         <Badge status={active ? 'success' : 'default'} text={active ? 'Active' : 'Closed'} />
-      ),
-    },
-    {
-      title: '',
-      key: 'actions',
-      width: 50,
-      render: (_: unknown, record: Job) => (
-        <Tooltip title="View on source">
-          <Button
-            type="text"
-            icon={<LinkOutlined />}
-            href={record.url}
-            target="_blank"
-          />
-        </Tooltip>
       ),
     },
   ];
@@ -340,22 +222,11 @@ export default function Jobs() {
           <Card bordered={false} size="small" style={{ borderRadius: 8 }}>
             <Statistic
               title="Total Jobs"
-              value={stats?.total || 0}
+              value={jobs.length}
               prefix={<GlobalOutlined style={{ color: '#5865F2' }} />}
             />
           </Card>
         </Col>
-        {stats && Object.entries(stats.bySource).slice(0, 3).map(([source, count]) => (
-          <Col xs={12} sm={6} key={source}>
-            <Card bordered={false} size="small" style={{ borderRadius: 8 }}>
-              <Statistic
-                title={source.charAt(0).toUpperCase() + source.slice(1)}
-                value={count}
-                valueStyle={{ color: SOURCE_COLORS[source] }}
-              />
-            </Card>
-          </Col>
-        ))}
       </Row>
 
       {/* Filters & Actions */}
@@ -381,7 +252,6 @@ export default function Jobs() {
                 <Option value="linkedin">LinkedIn</Option>
                 <Option value="indeed">Indeed</Option>
                 <Option value="glassdoor">Glassdoor</Option>
-                <Option value="manual">Manual</Option>
               </Select>
               <Select
                 placeholder="Category"
@@ -390,24 +260,17 @@ export default function Jobs() {
                 value={categoryFilter}
                 onChange={setCategoryFilter}
               >
-                <Option value="AI/ML">AI/ML</Option>
-                <Option value="Data Science">Data Science</Option>
-                <Option value="Software Engineering">Software Engineering</Option>
-                <Option value="DevOps">DevOps</Option>
-                <Option value="Product">Product</Option>
-                <Option value="Design">Design</Option>
+                <Option value="ai_ml">AI/ML</Option>
+                <Option value="data_science">Data Science</Option>
+                <Option value="data_analysis">Data Analysis</Option>
+                <Option value="bi_analytics">BI Analytics</Option>
               </Select>
             </Space>
           </Col>
           <Col>
-            <Space>
-              <Button icon={<ReloadOutlined />} onClick={() => window.location.reload()}>
-                Refresh
-              </Button>
-              <Button icon={<DownloadOutlined />} onClick={handleExport}>
-                Export CSV
-              </Button>
-            </Space>
+            <Button icon={<ReloadOutlined />} onClick={() => window.location.reload()}>
+              Refresh
+            </Button>
           </Col>
         </Row>
       </Card>
@@ -420,12 +283,10 @@ export default function Jobs() {
           rowKey="id"
           loading={loading}
           pagination={{
-            ...pagination,
+            pageSize: 20,
             showSizeChanger: true,
             showTotal: (total) => `${total} jobs`,
-            pageSizeOptions: ['10', '20', '50', '100'],
           }}
-          onChange={(pag) => setPagination(pag)}
         />
       </Card>
 
@@ -456,12 +317,12 @@ export default function Jobs() {
                 {selectedJob.experienceLevel}
               </Descriptions.Item>
               <Descriptions.Item label="Category">
-                <Tag color={CATEGORY_COLORS[selectedJob.category]}>
+                <Tag color={CATEGORY_COLORS[selectedJob.category] || 'default'}>
                   {selectedJob.category}
                 </Tag>
               </Descriptions.Item>
               <Descriptions.Item label="Source">
-                <Tag style={{ backgroundColor: SOURCE_COLORS[selectedJob.source], color: '#fff' }}>
+                <Tag style={{ backgroundColor: SOURCE_COLORS[selectedJob.source] || '#6B7280', color: '#fff' }}>
                   {selectedJob.source}
                 </Tag>
               </Descriptions.Item>
@@ -470,12 +331,16 @@ export default function Jobs() {
             <Title level={5}>Description</Title>
             <Paragraph>{selectedJob.description}</Paragraph>
 
-            <Title level={5}>Requirements</Title>
-            <ul>
-              {selectedJob.requirements.map((req, i) => (
-                <li key={i}>{req}</li>
-              ))}
-            </ul>
+            {selectedJob.requirements && selectedJob.requirements.length > 0 && (
+              <>
+                <Title level={5}>Requirements</Title>
+                <ul>
+                  {selectedJob.requirements.map((req, i) => (
+                    <li key={i}>{req}</li>
+                  ))}
+                </ul>
+              </>
+            )}
 
             <div style={{ marginTop: 24 }}>
               <Button type="primary" href={selectedJob.url} target="_blank" icon={<LinkOutlined />}>

@@ -160,20 +160,67 @@ export default function BasicLayout() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: collapsed ? 'center' : 'flex-start',
-            padding: collapsed ? '0' : '0 24px',
+            padding: collapsed ? '0' : '0 16px',
             borderBottom: '1px solid #2D2D2D',
           }}
         >
-          <span
-            style={{
-              fontSize: collapsed ? 20 : 24,
-              fontWeight: 700,
-              color: '#5865F2',
-              letterSpacing: '-0.5px',
-            }}
-          >
-            {collapsed ? 'S' : 'Spark.AI'}
-          </span>
+          {collapsed ? (
+            <span style={{ fontSize: 20, fontWeight: 700, color: '#5865F2' }}>S</span>
+          ) : (
+            <div style={{ position: 'relative', display: 'inline-block' }}>
+              <span
+                style={{
+                  fontSize: 22,
+                  fontWeight: 700,
+                  background: 'linear-gradient(135deg, #5865F2 0%, #ec4899 100%)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'white',
+                }}
+              >
+                Spark.A
+                <span style={{ position: 'relative', display: 'inline-block' }}>
+                  ı
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: -4,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: 8,
+                      height: 8,
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: 'block',
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(135deg, #6366f1 0%, #ec4899 50%, #f59e0b 100%)',
+                        clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)',
+                      }}
+                    />
+                  </span>
+                </span>
+              </span>
+              <svg
+                viewBox="0 0 100 35"
+                preserveAspectRatio="none"
+                style={{
+                  position: 'absolute',
+                  bottom: -4,
+                  left: '6%',
+                  width: '88%',
+                  height: 6,
+                }}
+              >
+                <path
+                  d="M0,15 C0,15 25,32 50,32 C75,32 88,18 88,18 L97,10 L86,18 C86,18 72,28 50,28 C28,28 5,14 5,14 Z"
+                  fill="#FF9900"
+                />
+              </svg>
+            </div>
+          )}
         </div>
 
         {/* Navigation Menu */}

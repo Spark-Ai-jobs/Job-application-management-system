@@ -1,0 +1,320 @@
+/* ========================================
+   SPARK.AI ANIMATION STYLES
+   ======================================== */
+
+/* Animation Container */
+.spark-animation-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.8s ease-out;
+}
+
+.spark-animation-container.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Brand Container */
+.spark-brand {
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spark-brand-wrapper {
+  position: relative;
+  overflow: visible;
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 700;
+}
+
+/* Brand Text */
+.spark-brand-text {
+  position: relative;
+  display: inline-block;
+  overflow: visible;
+  background: linear-gradient(135deg, #5865F2 0%, #ec4899 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: white;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.spark-brand-text.visible {
+  opacity: 1;
+}
+
+/* Lightning Flicker Animation */
+.spark-brand-text.spark-active {
+  animation: lightning-reveal 0.15s infinite alternate;
+}
+
+@keyframes lightning-reveal {
+  0% {
+    color: white;
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+    transform: scale(1);
+  }
+  100% {
+    color: transparent;
+    text-shadow:
+      -1px -1px 15px rgba(88, 101, 242, 0.8),
+      1px 1px 15px rgba(236, 72, 153, 0.8);
+    transform: scale(1.04) skewX(-2deg);
+  }
+}
+
+/* Orange Arrow (Amazon-style) */
+.spark-brand-arrow {
+  position: absolute;
+  bottom: -12px;
+  left: 6%;
+  width: 88%;
+  height: 16px;
+  z-index: 1;
+}
+
+/* Dotless i character */
+.dotless-i {
+  position: relative;
+  display: inline-block;
+  font-style: normal;
+  overflow: visible;
+}
+
+/* Star Dot - Final star that stays on the i */
+.star-dot {
+  position: absolute;
+  top: clamp(-10px, -1vw, -16px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(16px, 1.5vw, 28px);
+  height: clamp(16px, 1.5vw, 28px);
+  opacity: 0;
+  z-index: 100;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.star-dot::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #6366f1 0%, #ec4899 50%, #f59e0b 100%);
+  clip-path: polygon(
+    50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+    50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%
+  );
+  filter: drop-shadow(0 0 4px rgba(236, 72, 153, 1))
+          drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
+}
+
+/* Sliding Star - Moves along the arrow */
+.sliding-star {
+  position: absolute;
+  bottom: clamp(-6px, -0.5vw, -8px);
+  left: 6%;
+  width: clamp(16px, 1.5vw, 28px);
+  height: clamp(16px, 1.5vw, 28px);
+  opacity: 0;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.sliding-star::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #6366f1 0%, #ec4899 50%, #f59e0b 100%);
+  clip-path: polygon(
+    50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+    50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%
+  );
+  filter: drop-shadow(0 0 6px rgba(236, 72, 153, 1))
+          drop-shadow(0 0 10px rgba(99, 102, 241, 0.8));
+}
+
+/* Animation Trigger */
+.spark-brand.animate-star .sliding-star {
+  animation: fastSlide 0.8s ease-out forwards;
+}
+
+.spark-brand.animate-star .star-dot {
+  animation: jumpToI 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s forwards;
+}
+
+/* Sliding Star Animation */
+@keyframes fastSlide {
+  0% {
+    left: 6%;
+    bottom: -6px;
+    opacity: 1;
+  }
+  40% {
+    left: 50%;
+    bottom: -14px;
+    opacity: 1;
+  }
+  70% {
+    left: 84%;
+    bottom: -6px;
+    opacity: 1;
+  }
+  85% {
+    left: 92%;
+    bottom: 20px;
+    opacity: 1;
+  }
+  100% {
+    left: 94%;
+    bottom: 60px;
+    opacity: 0;
+  }
+}
+
+/* Star Landing Animation */
+@keyframes jumpToI {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(2) translateY(20px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(0.8) translateY(-5px);
+  }
+  75% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.2) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1) translateY(0);
+  }
+}
+
+/* Keep Star Visible with Rotation */
+.spark-brand.star-landed .star-dot {
+  opacity: 1 !important;
+  transform: translateX(-50%) scale(1) !important;
+}
+
+.spark-brand.star-landed .star-dot::before {
+  animation: rotateStar 3s linear infinite !important;
+}
+
+@keyframes rotateStar {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Particle background */
+.spark-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.spark-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(88, 101, 242, 0.6);
+  border-radius: 50%;
+  animation: float-particle 3s ease-in-out infinite;
+}
+
+@keyframes float-particle {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Tagline */
+.spark-tagline {
+  margin-top: 24px;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.7);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease-out;
+}
+
+.spark-tagline.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Login specific styles */
+.spark-login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.spark-login-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.spark-login-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+}
+
+.spark-login-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 40px;
+  width: 400px;
+  max-width: 90vw;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .spark-brand-wrapper {
+    font-size: 48px;
+  }
+
+  .spark-login-card {
+    padding: 24px;
+    width: 340px;
+  }
+}
