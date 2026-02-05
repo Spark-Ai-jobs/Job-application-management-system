@@ -1,0 +1,67 @@
+# Ignore certbot/SSL directories
+certbot/
+nginx/ssl/
+
+# Git
+.git
+.gitignore
+
+# Dependencies (will be installed in container)
+node_modules/
+**/node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/
+
+# Build outputs
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose*.yml
+Dockerfile
+
+# Documentation
+*.md
+docs/
+
+# Infrastructure
+infrastructure/
+.github/
+
+# Test files
+coverage/
+.pytest_cache/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Backups
+backups/
